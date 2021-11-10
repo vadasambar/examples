@@ -121,12 +121,12 @@ do
   # echo "retries:  $retries / $MAX_RETRIES" 
   if [ ${http_code} -eq 200 ]; then
     echo "Attempting to open Keptn bridge on http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge"
-    if ! command -v open &> /dev/null
+    if ! command -v xdg-open &> /dev/null
     then
       echo "Open command not found. Printing connection details instead"
       break
     else
-      open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge
+      xdg-open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge
       break
     fi
   fi
