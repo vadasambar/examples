@@ -197,11 +197,11 @@ echo "Attempt to open Keptn Bridge in 5 seconds..."
 echo "Demo setup will continue in the background while you can explore the Keptn Bridge..."
 sleep 5
 
-if ! command -v open &> /dev/null
+if ! command -v xdg-open &> /dev/null
 then
   echo http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
 else
-  open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
+  xdg-open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
 fi
 
 
