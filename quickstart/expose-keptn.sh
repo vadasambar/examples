@@ -57,13 +57,13 @@ function wait_for_deployment_in_namespace() {
   fi
 }
 
-# ingress settings
-INGRESS_PORT=$2
-INGRESS_HOST=127.0.0.1
+# # ingress settings
+# INGRESS_PORT=$2
+# INGRESS_HOST=127.0.0.1
 
-if [ -z "$INGRESS_PORT" ]; then
- 	INGRESS_PORT=8082
-fi
+# if [ -z "$INGRESS_PORT" ]; then
+#  	INGRESS_PORT=8082
+# fi
 
 # retries for opening the bridge
 MAX_RETRIES=5
