@@ -59,7 +59,7 @@ function wait_for_deployment_in_namespace() {
 
 # ingress settings
 INGRESS_PORT=$2
-INGRESS_IP=127.0.0.1
+INGRESS_HOST=127.0.0.1
 
 if [ -z "$INGRESS_PORT" ]; then
  	INGRESS_PORT=8082
@@ -106,43 +106,43 @@ kubectl -n keptn delete pods --selector=app.kubernetes.io/name=bridge --wait
 
 # Authenticating Keptn CLI against the current Keptn installation
 print_headline "Authenticating Keptn CLI against Keptn installation"
-echo "keptn auth --endpoint=http://$INGRESS_IP.nip.io:$INGRESS_PORT --api-token=*****"
-keptn auth --endpoint=http://$INGRESS_IP.nip.io:$INGRESS_PORT --api-token=$(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
+echo "keptn auth --endpoint=http://$INGRESS_HOST:$INGRESS_PORT --api-token=*****"
+keptn auth --endpoint=http://$INGRESS_HOST:$INGRESS_PORT --api-token=$(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
 
 wait_for_deployment_in_namespace "bridge" "keptn"
 
 # Opening bridge
 print_headline "Opening Keptn Bridge..."
-http_code=$(curl -LI http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge -o /dev/null -w '%{http_code}\n' -s)
+http_code=$(curl -LI http://$INGRESS_HOST:$INGRESS_PORT/bridge -o /dev/null -w '%{http_code}\n' -s)
 retries=1
 
 while [ $retries -le $MAX_RETRIES ];
 do
   # echo "retries:  $retries / $MAX_RETRIES" 
   if [ ${http_code} -eq 200 ]; then
-    echo "Attempting to open Keptn bridge on http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge"
+    echo "Attempting to open Keptn bridge on http://$INGRESS_HOST:$INGRESS_PORT/bridge"
     if ! command -v xdg-open &> /dev/null
     then
       echo "Open command not found. Printing connection details instead"
       break
     else
-      xdg-open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge
+      xdg-open http://$INGRESS_HOST:$INGRESS_PORT/bridge
       break
     fi
   fi
   echo "Keptn bridge not yet available, waiting $SLEEP_TIME seconds and then trying again"
   retries=$[$retries +1]
   sleep $SLEEP_TIME
-  http_code=$(curl -LI http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge -o /dev/null -w '%{http_code}\n' -s)
+  http_code=$(curl -LI http://$INGRESS_HOST:$INGRESS_PORT/bridge -o /dev/null -w '%{http_code}\n' -s)
 done
 
 if [ $retries -ge $MAX_RETRIES ]; then
-  echo "Bridge not yet available at http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge"
+  echo "Bridge not yet available at http://$INGRESS_HOST:$INGRESS_PORT/bridge"
   echo "Please check the log for any errors that might have happened."
 else
   print_headline "Welcome aboard!"
-  echo "Find the Keptn Bridge at http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge "
-  echo "Find the Keptn API at http://$INGRESS_IP.nip.io:$INGRESS_PORT/api "
+  echo "Find the Keptn Bridge at http://$INGRESS_HOST:$INGRESS_PORT/bridge "
+  echo "Find the Keptn API at http://$INGRESS_HOST:$INGRESS_PORT/api "
   echo "For more information please visit https://keptn.sh "
   echo ""
 fi
