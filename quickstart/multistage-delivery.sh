@@ -85,12 +85,12 @@ function wait_for_deployment_in_namespace() {
 }
 
 
-# INGRESS_PORT=$1
-# INGRESS_IP=127.0.0.1
+INGRESS_PORT=$1
+INGRESS_IP=127.0.0.1
 
-# if [ -z "$INGRESS_PORT" ]; then
-#  	INGRESS_PORT=8082
-# fi
+if [ -z "$INGRESS_PORT" ]; then
+ 	INGRESS_PORT=8082
+fi
 
 
 verify_helm_installation
@@ -123,29 +123,29 @@ kubectl create ns monitoring
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm install prometheus prometheus-community/prometheus --namespace monitoring --wait
 
-kubectl apply -f - <<EOF
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: prometheus-ingress
-  namespace: monitoring
-spec:
-  rules:
-  - host: prometheus.$INGRESS_HOST
-    http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: prometheus-server
-            port:
-              number: 80
-EOF
+# kubectl apply -f - <<EOF
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: prometheus-ingress
+#   namespace: monitoring
+# spec:
+#   rules:
+#   - host: prometheus.$INGRESS_IP.nip.io
+#     http:
+#       paths:
+#       - pathType: Prefix
+#         path: /
+#         backend:
+#           service:
+#             name: prometheus-server
+#             port:
+#               number: 80
+# EOF
 
-verify_test_step $? "Applying Ingress for Prometheus failed"
+# verify_test_step $? "Applying Ingress for Prometheus failed"
 
-echo "Prometheus is available at http://prometheus.$INGRESS_HOST:$INGRESS_PORT "
+echo "Prometheus is available at http://prometheus.$INGRESS_IP.nip.io:$INGRESS_PORT "
 
 print_headline "Setting up Prometheus integration"
 kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-service/release-0.6.2/deploy/role.yaml -n monitoring
@@ -192,16 +192,16 @@ verify_test_step $? "Trigger delivery for helloservice failed"
 
 
 echo "Following the multi stage delivery in Keptn Bridge while we are setting up Prometheus and configure quality gates"
-echo "Find the details here: http://$INGRESS_HOST:$INGRESS_PORT/bridge/project/$PROJECT/sequence"
+echo "Find the details here: http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/$PROJECT/sequence"
 echo "Attempt to open Keptn Bridge in 5 seconds..."
 echo "Demo setup will continue in the background while you can explore the Keptn Bridge..."
 sleep 5
 
 if ! command -v xdg-open &> /dev/null
 then
-  echo http://$INGRESS_HOST:$INGRESS_PORT/bridge/project/podtatohead/sequence
+  echo http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
 else
-  xdg-open http://$INGRESS_HOST:$INGRESS_PORT/bridge/project/podtatohead/sequence
+  xdg-open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
 fi
 
 
