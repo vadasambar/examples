@@ -131,7 +131,7 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: prometheus.$INGRESS_IP.nip.io
+  - host: prometheus.$INGRESS_HOST
     http:
       paths:
       - pathType: Prefix
@@ -145,7 +145,7 @@ EOF
 
 verify_test_step $? "Applying Ingress for Prometheus failed"
 
-echo "Prometheus is available at http://prometheus.$INGRESS_IP.nip.io:$INGRESS_PORT "
+echo "Prometheus is available at http://prometheus.$INGRESS_HOST:$INGRESS_PORT "
 
 print_headline "Setting up Prometheus integration"
 kubectl apply -f https://raw.githubusercontent.com/keptn-contrib/prometheus-service/release-0.6.2/deploy/role.yaml -n monitoring
@@ -192,16 +192,16 @@ verify_test_step $? "Trigger delivery for helloservice failed"
 
 
 echo "Following the multi stage delivery in Keptn Bridge while we are setting up Prometheus and configure quality gates"
-echo "Find the details here: http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/$PROJECT/sequence"
+echo "Find the details here: http://$INGRESS_HOST:$INGRESS_PORT/bridge/project/$PROJECT/sequence"
 echo "Attempt to open Keptn Bridge in 5 seconds..."
 echo "Demo setup will continue in the background while you can explore the Keptn Bridge..."
 sleep 5
 
 if ! command -v xdg-open &> /dev/null
 then
-  echo http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
+  echo http://$INGRESS_HOST:$INGRESS_PORT/bridge/project/podtatohead/sequence
 else
-  xdg-open http://$INGRESS_IP.nip.io:$INGRESS_PORT/bridge/project/podtatohead/sequence
+  xdg-open http://$INGRESS_HOST:$INGRESS_PORT/bridge/project/podtatohead/sequence
 fi
 
 
