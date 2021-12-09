@@ -85,12 +85,12 @@ function wait_for_deployment_in_namespace() {
 }
 
 
-INGRESS_PORT=$1
-INGRESS_IP=127.0.0.1
+# INGRESS_PORT=$1
+# INGRESS_IP=127.0.0.1
 
-if [ -z "$INGRESS_PORT" ]; then
- 	INGRESS_PORT=8082
-fi
+# if [ -z "$INGRESS_PORT" ]; then
+#  	INGRESS_PORT=8082
+# fi
 
 
 verify_helm_installation
